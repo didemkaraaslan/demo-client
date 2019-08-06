@@ -1,18 +1,55 @@
-import React, { useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Message, Header, Image, Modal, Form } from 'semantic-ui-react'
-import { availableCategories } from "../../utils/Categories.js";
+import axios from 'axios';
+import { Button, Message, Header, Image, Modal, Form } from 'semantic-ui-react';
+import {
+  EVENT_FETCH_ALL_CATEGORIES,
+  EVENT_ADD_NEW_CATEGORY,
+  EVENT_DELETE_CATEGORY
+} from '../../utils/SocketEvents.js';
+const io = require('socket.io-client');
+const socket = io('http://localhost:3000');
 
-const CategoryPicker = () => {
-  const [modalOpen, setModalOpen] = useState(true);
+const CategoryPicker = ({ modalOpen, onModalClose }) => {
+  const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
 
-  console.log(selectedCategories)
+  // Effect for fetching all available categories
+  useEffect(() => {
+    axios.get(`http://localhost:3000/api/categories`)
+     .then(res => {
+       socket.on(EVENT_FETCH_ALL_CATEGORIES, payload => {
+         setCategories(payload);
+       });
+     });
+
+     return(() => {
+       socket.close();
+     });
+  }, []);
+
+  // Effect for updating categories when a new category added in realtime
+  useEffect(() => {
+    socket.on(EVENT_ADD_NEW_CATEGORY, payload => {
+      console.log(payload)
+      setCategories(prevCategories => [...prevCategories, payload]);
+    });
+  }, []);
+
+  // Effect for updating categories when a  category deleted in realtime
+  useEffect(() => {
+    socket.on(EVENT_DELETE_CATEGORY, categoryIdToBeDeleted => {
+      console.log(categoryIdToBeDeleted)
+      setCategories(prevCategories =>
+        prevCategories.filter(category => category.categoryId !== categoryIdToBeDeleted));
+    });
+  }, []);
+
   return(
     <Modal
       dimmer="blurring"
       open={modalOpen}
-      onClose={() => setModalOpen(false)}
+      onClose={() => onModalClose(selectedCategories)}
       closeOnDimmerClick={false}
     >
       <Modal.Header>Size hangi içerikleri gösterelim?</Modal.Header>
@@ -21,7 +58,7 @@ const CategoryPicker = () => {
           <Header>Kategoriler</Header>
           <Form>
             <Form.Group inline={false}>
-              { availableCategories.map(({ categoryId, categoryName}) => (
+              { categories.map(({ categoryId, categoryName}) => (
                 <Form.Checkbox
                   key={categoryId}
                   label={categoryName}
@@ -57,11 +94,16 @@ const CategoryPicker = () => {
           disabled={selectedCategories.length <= 0}
           labelPosition='right'
           content="İlerle"
-          onClick={() => setModalOpen(false)}
+          onClick={() => onModalClose(selectedCategories)}
         />
       </Modal.Actions>
     </Modal>
   );
+};
+
+CategoryPicker.propTypes = {
+  modalOpen: PropTypes.bool,
+  onModalClose: PropTypes.func
 };
 
 export default CategoryPicker;

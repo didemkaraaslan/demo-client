@@ -9,6 +9,7 @@ const TripleProduct = ({ chunk }) => (
       chunk.map(product => (
         <Grid.Column key={product.productId}>
           <Product
+            key={product.productId}
             productId={product.productId}
             productName={product.productName}
             productImage={product.productImage}
