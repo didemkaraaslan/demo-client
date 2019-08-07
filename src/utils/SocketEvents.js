@@ -5,6 +5,7 @@ const EVENT_ADD_NEW_PRODUCT = "add product";
 const EVENT_ADD_NEW_CATEGORY = "add category";
 const EVENT_DELETE_PRODUCT = "delete product";
 const EVENT_DELETE_CATEGORY = "delete category";
+const EVENT_UPDATE_PRODUCT = "update product";
 
 module.exports = {
   EVENT_FETCH_ALL_PRODUCTS,
@@ -12,5 +13,6 @@ module.exports = {
   EVENT_ADD_NEW_PRODUCT,
   EVENT_ADD_NEW_CATEGORY,
   EVENT_DELETE_PRODUCT,
-  EVENT_DELETE_CATEGORY
+  EVENT_DELETE_CATEGORY,
+  EVENT_UPDATE_PRODUCT
 };

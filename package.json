@@ -34,7 +34,6 @@
     ]
   },
   "devDependencies": {
-    "eslint": "^6.1.0",
     "eslint-config-google": "^0.13.0",
     "eslint-config-prettier": "^6.0.0",
     "eslint-config-standard": "^13.0.1",

@@ -6,7 +6,8 @@ import TripleProduct from "./TripleProduct.jsx";
 import {
   EVENT_FETCH_ALL_PRODUCTS,
   EVENT_ADD_NEW_PRODUCT,
-  EVENT_DELETE_PRODUCT
+  EVENT_DELETE_PRODUCT,
+  EVENT_UPDATE_PRODUCT
 } from "../../utils/SocketEvents.js";
 const io = require("socket.io-client");
 const socket = io("http://localhost:3000");
@@ -47,7 +48,6 @@ const ProductsList = ({ categories }) => {
   // Effect for updating products when a new products added in realtime
   useEffect(() => {
     socket.on(EVENT_ADD_NEW_PRODUCT, payload => {
-      console.log(payload);
       setProducts(prevProducts => [...prevProducts, payload]);
     });
   }, []);
@@ -55,12 +55,25 @@ const ProductsList = ({ categories }) => {
   // Effect for updating products when a product deleted in realtime
   useEffect(() => {
     socket.on(EVENT_DELETE_PRODUCT, productIdToBeDeleted => {
-      console.log(productIdToBeDeleted);
       setProducts(prevProducts =>
         prevProducts.filter(
           product => product.productId !== productIdToBeDeleted
         )
       );
+    });
+  }, []);
+
+  // Effect for updating products  when a product is updated in real time
+  useEffect(() => {
+    socket.on(EVENT_UPDATE_PRODUCT, updatedProduct => {
+      setProducts(prevProducts => {
+        const updatedProducts = prevProducts;
+        const index = updatedProducts.findIndex(
+          product => product.productId === updatedProduct.productId
+        );
+        updatedProducts[index] = { ...updatedProduct };
+        return [...updatedProducts];
+      });
     });
   }, []);
 

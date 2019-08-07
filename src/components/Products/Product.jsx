@@ -24,15 +24,10 @@ const Product = ({
       </div>
     }
     extra={
-      <div>
-        <span style={{ float: "left" }}>
-          <Icon name="hashtag" />
-          {productCategoryName}
-        </span>
-        <a style={{ float: "right" }}>
-          <Icon name="delete" />
-        </a>
-      </div>
+      <span style={{ float: "left" }}>
+        <Icon name="hashtag" />
+        {productCategoryName}
+      </span>
     }
   />
 );
