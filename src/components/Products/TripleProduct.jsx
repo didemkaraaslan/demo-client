@@ -1,22 +1,32 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Grid, Image } from 'semantic-ui-react';
+import React from "react";
+import PropTypes from "prop-types";
+import { Grid } from "semantic-ui-react";
 import Product from "./Product.jsx";
 
 const TripleProduct = ({ chunk }) => (
   <Grid.Row>
-    {
-      chunk.map(product => (
-        <Grid.Column key={product.productId}>
+    {chunk.map(
+      ({
+        productId,
+        productName,
+        productImage,
+        productCategoryName,
+        productPrice,
+        productStockQuantity
+      }) => (
+        <Grid.Column key={productId}>
           <Product
-            key={product.productId}
-            productId={product.productId}
-            productName={product.productName}
-            productImage={product.productImage}
+            key={productId}
+            productId={productId}
+            productName={productName}
+            productImage={productImage}
+            productCategoryName={productCategoryName}
+            productPrice={productPrice}
+            productStockQuantity={productStockQuantity}
           />
         </Grid.Column>
-      ))
-    }
+      )
+    )}
   </Grid.Row>
 );
 
